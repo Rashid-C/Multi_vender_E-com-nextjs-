@@ -1,4 +1,4 @@
-import { inngest } from "./client";
+import { inngest } from "@/inngest/client";
 import prisma from "@/lib/prisma";
 //inngest func to save user data to a db
 
