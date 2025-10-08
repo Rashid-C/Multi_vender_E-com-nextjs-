@@ -21,7 +21,7 @@ export async function POST(request) {
             return NextResponse.json({ error: "Missing store information" }, { status: 400 })
         }
 
-        //check if the user already has a store
+        //check if the user have already registered a store
         const store = await prisma.store.findFirst({
             where: { userId: userId }
         })
@@ -74,6 +74,34 @@ export async function POST(request) {
             data: { store: { connect: { id: newStore.id } } }
         })
         return NextResponse.json({ message: "applied. waiting for approval" })
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: error.code || error.message }, { status: 400 })
+
+    }
+}
+
+// check is user have already registered a store if yes then send status of store
+
+export async function GET(request) {
+    try {
+        const { userId } = getAuth(request)
+
+
+        //check if the user have already registered a store
+        const store = await prisma.store.findFirst({
+            where: { userId: userId }
+        })
+
+        //if store is already registered then send status of store
+        if (store) {
+            return NextResponse.json({ status: store.status })
+        }
+
+        return NextResponse.json({ status: "Not registered" })
+
+
+
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: error.code || error.message }, { status: 400 })
